@@ -6,9 +6,9 @@ using System.Threading;
 using log4net;
 using log4net.Config;
 using NUnit.Framework;
-using EricDaugherty.CSES.Net;
+using TestMailServer.Core.SmtpServer;
 
-namespace EricDaugherty.CSES.SmtpServer
+namespace TestMailServer.UnitTests.SmtpServer
 {
 
 	[TestFixture]
@@ -147,14 +147,14 @@ namespace EricDaugherty.CSES.SmtpServer
 			
 			// Read Welcome Message
 			string line = ReadLine( socket );
-			Assertion.Assert( "Welcome Message not recieved.", line.StartsWith( "220" ) );
+            Assert.IsTrue(line.StartsWith("220"), "Welcome Message not recieved.");
 			
 			// Helo
 			WriteLine( socket, "helo nunittestdomain.com" );
 			line = ReadLine( socket );
-			Assertion.Assert( "Helo response incorrect.", line.Equals( "250 testdomain.com" ) );
-			
-			return socket;
+            Assert.IsTrue(line.Equals("250 testdomain.com"), "Helo response incorrect.");
+
+            return socket;
 		}
 		
 		private void Disconnect( Socket socket )
@@ -162,7 +162,7 @@ namespace EricDaugherty.CSES.SmtpServer
 			// Quit
 			WriteLine( socket, "quit" );
 			string line = ReadLine( socket );
-			Assertion.Assert( "Quit ack incorrect.", line.StartsWith( "221" ) );
+            Assert.IsTrue(line.StartsWith("221"), "Quit ack incorrect.");
 			
 			socket.Close();
 		}
@@ -170,7 +170,7 @@ namespace EricDaugherty.CSES.SmtpServer
 		private void CheckResponse( Socket socket, string command, string responseCode )
 		{
 			String line = WriteAndRead( socket, command );
-			Assertion.Assert( command + " did not result in the correct response code: " + responseCode, line.StartsWith( responseCode ) );			
+            Assert.IsTrue(line.StartsWith(responseCode), command + " did not result in the correct response code: " + responseCode);
 		}
 		
 		/// <summary>Helper method to combine a write and a read.</summary>
